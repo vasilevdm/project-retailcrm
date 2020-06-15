@@ -1,0 +1,35 @@
+{{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    {{ form_row(form.name) }}
+
+    {{ form_row(form.phone) }}
+
+    {{ form_row(form.email) }}
+
+    <h3>Addresses <button type="button" class="btn btn-outline-primary js-address-add" data-list-selector="#address-fields-list">Add address</button></h3>
+
+    {# store the prototype on the data-prototype attribute #}
+    <div class="row">
+        <div class="col">
+            <div class="row" id="address-fields-list"
+                data-prototype="{{ form_widget(form.addresses.vars.prototype)|e }}"
+                data-widget-tags="{{ '<div class="col-4"><button type="button" class="close js-address-remove" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'|e }}"
+                data-widget-counter="{{ form.addresses|length }}">
+                {% for addressField in form.addresses %}
+                    <div class="col-4">
+                        <button type="button" class="close js-address-remove" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        {{ form_errors(addressField) }}
+                        {{ form_widget(addressField) }}
+                    </div>
+                {% endfor %}
+            </div>
+            {# prevents weird label from showing up in new #}
+            {{ form_widget(form.addresses) }}
+        </div>
+    </div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary" formnovalidate>{{ button_label|default('Create client') }}</button>
+    <a class="btn btn-default" href="{{ path('client_index') }}">back to list</a>
+{{ form_end(form) }}

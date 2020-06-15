@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Client{% endblock %}
+
+{% block body %}
+    <h1>Client</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ client.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ client.name }}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{ client.phone }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ client.email }}</td>
+            </tr>
+            <tr>
+                <th>Addresses</th>
+                <td>
+                    {% for address in client.addresses %}
+                        {{ address.city }} : {{ address.address }} <br>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <th>CreateDate</th>
+                <td>{{ client.createDate ? client.createDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdateDate</th>
+                <td>{{ client.updateDate ? client.updateDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>History</th>
+                <td>
+                    {% for log in client.logs %}
+                        <div class="" style="background: lightgray">
+                            <div class="card-header"><b>Log date: {{ log.date|date('d.m.Y H:i:s') }}</b></div>
+
+                            {% if log.data.insert|length > 0 %}
+                            <div class="card">
+                                <div class="card-header"><b>Added</b>:</div>
+                                <ul class="list-group list-group-flush">
+                                {% for key, data in log.data.insert %}
+                                    {% for entity, fields in data %}
+                                        <li class="list-group-item">{{ entity }}<br>
+                                        {% for field, values in fields %}
+                                            {{ field }}: {{ values[1]|join('') }},
+                                        {% endfor %}
+                                        </li>
+                                    {% endfor %}
+                                {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if log.data.update|length > 0 %}
+                            <div class="card">
+                                <div class="card-header"><b>Updated</b>:</div>
+                                {% for key, data in log.data.update %}
+                                    {% for entity, fields in data %}
+                                        {% for field, values in fields %}
+                                        <li class="list-group-item">
+                                            {{ entity }} {{ field }}<br>before: {{ values[0]|join('') }}, after: {{ values[1]|join('') }}
+                                        </li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            {% if log.data.delete|length > 0 %}
+                            <div class="card">
+                                <div class="card-header"><b>Deleted</b>:</div>
+                                {% for key, data in log.data.delete %}
+                                    {% for entity, fields in data %}
+                                        <li class="list-group-item">{{ entity }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                        </div>
+                        <hr>
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a class="btn btn-outline-warning" href="{{ path('client_edit', {'id': client.id}) }}">Edit client</a>
+
+    <a class="btn btn-default" href="{{ path('client_index') }}">back to list</a>
+
+    {{ include('client/_delete_form.html.twig') }}
+{% endblock %}

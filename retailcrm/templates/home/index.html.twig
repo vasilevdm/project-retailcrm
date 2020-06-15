@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Client database{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Clients database</h1>
+        <p><a class="btn btn-outline-primary" href="{{ path('client_index') }}">Go to clients</a></p>
+        <p><a class="btn btn-outline-warning" href="{{ path('fill') }}">Fill database with fake clients</a></p>
+    </div>
+{% endblock %}

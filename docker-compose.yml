@@ -1,0 +1,52 @@
+version: '3'
+services:
+  retailcrm-nginx:
+    build:
+      context: ./retailcrm/docker
+      dockerfile: nginx.docker
+    volumes:
+    - ./retailcrm:/app
+    depends_on:
+      - retailcrm-php-fpm
+    ports:
+      - "8080:80"
+  retailcrm-php-fpm:
+    build:
+      context: ./retailcrm/docker
+      dockerfile: php-fpm.docker
+#    environment:
+#      APP_DEBUG: 1
+    volumes:
+      - ./retailcrm:/app
+  retailcrm-php-cli:
+    build:
+      context: ./retailcrm/docker
+      dockerfile: php-cli.docker
+#    environment:
+#      APP_DEBUG: 1
+    volumes:
+      - ./retailcrm:/app
+      - composer:/root/.composer/cache
+#    tty: true
+#    stdin_open: true
+  retailcrm-encore:
+    image: node:12.18-alpine
+    volumes:
+      - ./retailcrm:/app
+    working_dir: /app
+#    command: ["npm", "run", "watch"]
+#    command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run watch"
+  retailcrm-postgres:
+    image: postgres:12.3-alpine
+    volumes:
+      - retailcrm-postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: app
+    ports:
+      - "54321:5432"
+
+volumes:
+  retailcrm-postgres:
+  composer:
